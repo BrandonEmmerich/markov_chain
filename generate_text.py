@@ -3,9 +3,6 @@ import nltk
 import numpy as np
 import random
 import string
-import sys
-
-remove_punctuation = dict((ord(punct), None) for punct in string.punctuation)
 
 def get_corpus():
     with open('data/simmons.json') as f:
@@ -14,6 +11,7 @@ def get_corpus():
     return data
 
 def corpus_to_words(corpus):
+    remove_punctuation = dict((ord(punct), None) for punct in string.punctuation)
     text = '\n'.join([d['blog_text'] for d in corpus])
     cleaned_text = text.lower().translate(remove_punctuation)
     words = nltk.word_tokenize(cleaned_text)
@@ -73,9 +71,9 @@ def clean_up_sentence(sentence):
     '''
     return sentence.replace("\n","").capitalize()[0:279] + '.'
 
-def generate_sentence(start_word, sentence_length):
+def generate_sentence(seed_word, sentence_length):
     sentence = []
-    word1 = start_word
+    word1 = seed_word
     i = 0
     sentence.append(word1)
     word2 = second_word(bigram_cfd, word1)
@@ -93,6 +91,27 @@ def generate_sentence(start_word, sentence_length):
 
     return ' '.join([word for word in sentence])
 
+def get_seed_word(data):
+    '''
+    Select a random text from the corpus, identify all proper nouns in that text,
+    return a random proper noun from that list.
+    '''
+    stop_words = nltk.corpus.stopwords.words('english')
+
+    random_post_index = int(len(data['data']) * random.random())
+    random_post = data['data'][random_post_index]['blog_text']
+
+    remove_punctuation = dict((ord(punct), None) for punct in string.punctuation)
+    cleaned_text = random_post.translate(remove_punctuation)
+    word_tokens = nltk.word_tokenize(cleaned_text)
+
+    no_stopwords = [word for word in word_tokens if not word in stop_words]
+    words_with_part_of_speech = nltk.tag.pos_tag(no_stopwords)
+    proper_nouns = [word for word, pos in words_with_part_of_speech if pos == 'NNP']
+    seed_word = random.choice(proper_nouns).lower()
+
+    return seed_word
+
 if __name__ == '__main__':
     data = get_corpus()
     words = corpus_to_words(data['data'])
@@ -100,9 +119,8 @@ if __name__ == '__main__':
     trigram_cfd = get_trigram_cfd(words)
     fourgram_cfd = get_fourgram_cfd(words)
 
-    start_word = str(sys.argv[1])
-    sentence_length = int(sys.argv[2])
+    seed_word = get_seed_word(data)
+    sentence_length = 45
 
-    sentence = generate_sentence(start_word, sentence_length)
-
+    sentence = generate_sentence(seed_word, sentence_length)
     print(clean_up_sentence(sentence))
