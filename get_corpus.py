@@ -53,7 +53,9 @@ if __name__ == '__main__':
         except Exception as e:
             print(e)
 
-    simmons_data = {'data': raw_data}
+    good_data = [d for d in raw_data['data'] if d['blog_text']]
+
+    simmons_data = {'data': good_data}
 
     with open('data/simmons.json', 'w') as outfile:
         json.dump(simmons_data, outfile)
