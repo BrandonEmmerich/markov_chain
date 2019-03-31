@@ -62,6 +62,13 @@ def next_word(fourgram_cfd, word1, word2, word3):
 
     return next_word
 
+def clean_up_sentence(sentence):
+    '''
+    Capitalize the first letter of the sentence, end the sentence with a period,
+    restrict the sentence length to 280 characters.
+    '''
+    return sentence.replace("\n","").capitalize()[0:279] + '.'
+
 def generate_sentence(start_word, sentence_length):
     sentence = []
     word1 = start_word
@@ -92,9 +99,6 @@ if __name__ == '__main__':
     start_word = str(sys.argv[1])
     sentence_length = int(sys.argv[2])
 
+    sentence = generate_sentence(start_word, sentence_length)
 
-    i = 0
-    while i < 5:
-        sentence = generate_sentence(start_word, sentence_length)
-        print(sentence)
-        i+=1
+    print(clean_up_sentence(sentence))
