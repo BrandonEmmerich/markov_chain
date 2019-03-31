@@ -2,7 +2,10 @@ import json
 import nltk
 import numpy as np
 import random
+import string
 import sys
+
+remove_punctuation = dict((ord(punct), None) for punct in string.punctuation)
 
 def get_corpus():
     with open('data/simmons.json') as f:
@@ -11,9 +14,10 @@ def get_corpus():
     return data
 
 def corpus_to_words(corpus):
-    big_string = '\n'.join([d['blog_text'] for d in corpus])
-    raw_words = big_string.replace(".","").replace(",","").replace("(", "").replace(")","").split(" ")
-    words = [word.lower() for word in raw_words]
+    text = '\n'.join([d['blog_text'] for d in corpus])
+    cleaned_text = text.lower().translate(remove_punctuation)
+    words = nltk.word_tokenize(cleaned_text)
+
     return words
 
 def get_bigram_cfd(words):
