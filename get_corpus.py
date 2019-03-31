@@ -6,7 +6,7 @@ import unidecode
 
 url_archives = 'http://grantland.com/features/complete-column-archives-grantland-edition/'
 
-XPATH_BLOG_TEXT = "//div[@class='blog-body']/p/text()"
+XPATH_BLOG_TEXT = '//*[@id="layout-main"]/div/p/text()'
 XPATH_LINKS = '//*[@id="layout-main"]/div[1]/p/a/@href'
 
 
