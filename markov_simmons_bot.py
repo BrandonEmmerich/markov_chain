@@ -1,8 +1,18 @@
 import json
 import nltk
 import numpy as np
+import private
 import random
 import string
+import sys
+import tweepy
+
+def open_twitter_api():
+    auth = tweepy.OAuthHandler(private.CONSUMER_KEY, private.CONSUMER_SECRET)
+    auth.set_access_token(private.ACCESS_KEY, private.ACCESS_SECRET)
+    api = tweepy.API(auth)
+
+    return api
 
 def get_corpus():
     with open('data/simmons.json') as f:
@@ -113,6 +123,8 @@ def get_seed_word(data):
     return seed_word
 
 if __name__ == '__main__':
+    api = open_twitter_api()
+
     data = get_corpus()
     words = corpus_to_words(data['data'])
     bigram_cfd = get_bigram_cfd(words)
@@ -123,4 +135,5 @@ if __name__ == '__main__':
     sentence_length = 45
 
     sentence = generate_sentence(seed_word, sentence_length)
-    print(clean_up_sentence(sentence))
+
+    api.update_status(sentence)
