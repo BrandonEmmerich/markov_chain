@@ -21,13 +21,3 @@ Use a [Markov Chain](https://en.wikipedia.org/wiki/Markov_chain) to automaticall
 This program applies a Markov Chain to a corpus of archived Bill Simmons blog posts from his time at Grantland. Specifically, program automatically generates text by determining a random next word given the preceeding three words.
 
 To run the program, first you need the training data to build a [conditional frequency distribution](https://en.wikipedia.org/wiki/Conditional_probability_distribution). Run the `get_corpus.py` program to scrape all 250 Simmons columns from the Grantland archive page.
-
-After that, you can run the `generate_text.py` program with a seed word and a sentence length as arguments to generate the Simmons-style text. For example:
-
-```bash
-python generate_text.py nba 50
-python generate_text.py goodell 50
-python generate_text.py ewing 50
-```
-
-**NOTE**: The program only takes lower-case text for the seed word argument.
